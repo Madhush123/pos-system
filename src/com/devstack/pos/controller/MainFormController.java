@@ -13,7 +13,7 @@ public class MainFormController {
 
     private void setStaticData() {
         lblVersion.setText("Version : "+ StaticResource.getVersion());
-        lblVersion.setText("From : "+ StaticResource.getCompany());
+        lblCompany.setText("From : "+ StaticResource.getCompany());
     }
 
 }
