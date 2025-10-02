@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="622.0" prefWidth="479.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.devstack.pos.controller.MainFormController">
    <children>
-      <ImageView fitHeight="628.0" fitWidth="479.0" pickOnBounds="true">
+      <ImageView fitHeight="622.0" fitWidth="479.0" pickOnBounds="true">
          <image>
             <Image url="@images/main-form-bg.jpg" />
          </image>
