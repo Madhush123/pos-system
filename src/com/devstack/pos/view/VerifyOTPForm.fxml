@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="context" prefHeight="622.0" prefWidth="479.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.devstack.pos.controller.VerifyOTPFormController">
+   <children>
+      <Button layoutX="22.0" layoutY="20.0" mnemonicParsing="false" onAction="#backToScreenOnAction" text="&lt;-- Back">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Text layoutX="22.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check your mobile phone," wrappingWidth="384.8000030517578">
+         <font>
+            <Font name="System Bold" size="29.0" />
+         </font>
+      </Text>
+      <Text layoutX="22.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="type the OTP" wrappingWidth="384.8000030517578">
+         <font>
+            <Font name="System Bold" size="29.0" />
+         </font>
+      </Text>
+      <TextField alignment="CENTER" layoutX="22.0" layoutY="185.0" prefHeight="46.0" prefWidth="76.0" promptText="-">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
+      <Button layoutX="22.0" layoutY="253.0" mnemonicParsing="false" onAction="#verifyOTPOnAction" prefHeight="46.0" prefWidth="434.0" style="-fx-background-color: #16A085;" text="Verify Now" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <TextField alignment="CENTER" layoutX="112.0" layoutY="185.0" prefHeight="46.0" prefWidth="76.0" promptText="-">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <TextField alignment="CENTER" layoutX="201.0" layoutY="185.0" prefHeight="46.0" prefWidth="76.0" promptText="-">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <TextField alignment="CENTER" layoutX="290.0" layoutY="185.0" prefHeight="46.0" prefWidth="76.0" promptText="-">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <TextField alignment="CENTER" layoutX="380.0" layoutY="185.0" prefHeight="46.0" prefWidth="76.0" promptText="-">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+   </children>
+</AnchorPane>
