@@ -1,11 +1,21 @@
 package com.devstack.pos.controller;
 
 import com.devstack.pos.env.StaticResource;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class MainFormController {
     public Label lblCompany;
     public Label lblVersion;
+    public ImageView context;
 
     public void initialize(){
         setStaticData();
@@ -16,4 +26,20 @@ public class MainFormController {
         lblCompany.setText("From : "+ StaticResource.getCompany());
     }
 
+    public void openRegisterFormOnAction(ActionEvent actionEvent) throws IOException {
+        setUi("RegisterForm");
+    }
+
+    public void openLoginFormOnAction(ActionEvent actionEvent) throws IOException {
+       setUi("LoginForm");
+    }
+
+    private void setUi(String location) throws IOException {
+        URL resource = getClass().getResource("/com/devstack/pos/view/"+location+".fxml");
+        Parent load = FXMLLoader.load(resource);
+        Stage stage=(Stage) context.getScene().getWindow();
+        stage.setScene(
+                new Scene(load)
+        );
+    }
 }
