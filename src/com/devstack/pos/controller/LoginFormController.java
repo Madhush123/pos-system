@@ -1,24 +1,45 @@
 package com.devstack.pos.controller;
 
+import com.devstack.pos.db.DatabaseCode;
+import com.devstack.pos.model.LoginData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 
 public class LoginFormController {
     public AnchorPane context;
+    public TextField txtEmail;
+    public PasswordField txtPassword;
 
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
     }
 
     public void loginOnAction(ActionEvent actionEvent) throws IOException {
-        setUi("DashboardForm");
+        try{
+            LoginData loginData = DatabaseCode.loginUser(
+                    txtEmail.getText().trim(), txtPassword.getText()
+            );
+            if(loginData.isStatus()){
+                new Alert(Alert.AlertType.INFORMATION,loginData.getMsg()).show();
+                setUi("DashboardForm");
+            }else{
+                new Alert(Alert.AlertType.WARNING,loginData.getMsg()).show();
+            }
+        }catch (ClassNotFoundException | SQLException e){
+            new Alert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")").show();
+            e.printStackTrace();
+        }
     }
 
     public void navigateToForgotPasswordOnAction(ActionEvent actionEvent) throws IOException {
