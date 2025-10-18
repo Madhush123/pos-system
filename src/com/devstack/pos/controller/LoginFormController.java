@@ -20,6 +20,7 @@ public class LoginFormController {
     public AnchorPane context;
     public TextField txtEmail;
     public PasswordField txtPassword;
+    public Alert alert;
 
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
@@ -31,13 +32,19 @@ public class LoginFormController {
                     txtEmail.getText().trim(), txtPassword.getText()
             );
             if(loginData.isStatus()){
-                new Alert(Alert.AlertType.INFORMATION,loginData.getMsg()).show();
+                alert=new Alert(Alert.AlertType.INFORMATION,loginData.getMsg());
+                alert.initOwner(context.getScene().getWindow());
+                alert.showAndWait();
                 setUi("DashboardForm");
             }else{
-                new Alert(Alert.AlertType.WARNING,loginData.getMsg()).show();
+                alert=new Alert(Alert.AlertType.WARNING,loginData.getMsg());
+                alert.initOwner(context.getScene().getWindow());
+                alert.showAndWait();
             }
         }catch (ClassNotFoundException | SQLException e){
-            new Alert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")").show();
+            alert=new Alert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")");
+            alert.initOwner(context.getScene().getWindow());
+            alert.showAndWait();
             e.printStackTrace();
         }
     }

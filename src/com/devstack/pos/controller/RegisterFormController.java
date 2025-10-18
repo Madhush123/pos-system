@@ -24,6 +24,7 @@ public class RegisterFormController {
     public TextField txtDisplayName;
     public TextField txtContactNumber;
     public PasswordField txtPassword;
+    public Alert alert;
 
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
@@ -40,13 +41,19 @@ public class RegisterFormController {
         try{
             boolean isSaved = DatabaseCode.registerUser(user);
             if(isSaved){
-                new Alert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName())).show();
+                alert=new Alert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName()));
+                alert.initOwner(context.getScene().getWindow());
+                alert.showAndWait();
                 setUi("LoginForm");
             }else{
-                new Alert(Alert.AlertType.WARNING,"Try Again!").show();
+                alert=new Alert(Alert.AlertType.WARNING,"Try Again!");
+                alert.initOwner(context.getScene().getWindow());
+                alert.showAndWait();
             }
         }catch (ClassNotFoundException | SQLException e){
-            new Alert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")").show();
+            alert=new Alert(Alert.AlertType.ERROR,"User already exists!");
+            alert.initOwner(context.getScene().getWindow());
+            alert.showAndWait();
             e.printStackTrace();
         }
     }
