@@ -1,4 +1,4 @@
-package com.devstack.pos.util;
+package com.devstack.pos.dao;
 
 import com.devstack.pos.db.DBConnection;
 

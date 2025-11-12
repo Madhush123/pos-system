@@ -1,7 +1,10 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.db.DatabaseCode;
-import com.devstack.pos.model.LoginData;
+import com.devstack.pos.bo.BoFactory;
+import com.devstack.pos.bo.custom.UserBo;
+import com.devstack.pos.dto.response.ResponseUserDTO;
+import com.devstack.pos.util.BoType;
+import com.devstack.pos.util.SystemVariables;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,19 +25,22 @@ public class LoginFormController {
     public PasswordField txtPassword;
     public Alert alert;
 
+    private UserBo userBo= BoFactory.getInstance().getBo(BoType.USER);
+
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
     }
 
     public void loginOnAction(ActionEvent actionEvent) throws IOException {
         try{
-            LoginData loginData = DatabaseCode.loginUser(
+            ResponseUserDTO loginData = userBo.loginUser(
                     txtEmail.getText().trim(), txtPassword.getText()
             );
             if(loginData.isStatus()){
                 alert=new Alert(Alert.AlertType.INFORMATION,loginData.getMsg());
                 alert.initOwner(context.getScene().getWindow());
                 alert.showAndWait();
+                SystemVariables.responseUserDTO=loginData;
                 setUi("DashboardForm");
             }else{
                 alert=new Alert(Alert.AlertType.WARNING,loginData.getMsg());

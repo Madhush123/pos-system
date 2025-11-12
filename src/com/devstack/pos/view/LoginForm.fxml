@@ -27,7 +27,7 @@
             <Font name="System Bold" size="29.0" />
          </font>
       </Text>
-      <TextField fx:id="txtEmail" layoutX="22.0" layoutY="180.0" prefHeight="46.0" prefWidth="434.0" promptText="Root Email">
+      <TextField fx:id="txtEmail" layoutX="22.0" layoutY="180.0" prefHeight="46.0" prefWidth="434.0" promptText="Root Email" text="madhushan@gmail.com">
          <font>
             <Font size="14.0" />
          </font></TextField>
@@ -57,7 +57,7 @@
          <font>
             <Font size="14.0" />
          </font></Hyperlink>
-      <PasswordField fx:id="txtPassword" layoutX="22.0" layoutY="246.0" prefHeight="46.0" prefWidth="370.0" promptText="Password">
+      <PasswordField fx:id="txtPassword" layoutX="22.0" layoutY="246.0" prefHeight="46.0" prefWidth="370.0" promptText="Password" text="1234">
          <font>
             <Font size="14.0" />
          </font>

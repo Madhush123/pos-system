@@ -1,11 +1,11 @@
-package com.devstack.pos.model;
+package com.devstack.pos.entity;
 
 public class User {
-    String userId;
-    String email;
-    String displayName;
-    String contactNumber;
-    String password;
+    private String userId;
+    private String email;
+    private String displayName;
+    private String contactNumber;
+    private String password;
 
     public User() {
     }

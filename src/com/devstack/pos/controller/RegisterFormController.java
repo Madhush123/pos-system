@@ -1,8 +1,9 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.db.DatabaseCode;
-import com.devstack.pos.model.User;
-import com.devstack.pos.util.PasswordHash;
+import com.devstack.pos.bo.BoFactory;
+import com.devstack.pos.bo.custom.UserBo;
+import com.devstack.pos.dto.request.RequestUserDTO;
+import com.devstack.pos.util.BoType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class RegisterFormController {
     public AnchorPane context;
@@ -26,20 +26,22 @@ public class RegisterFormController {
     public PasswordField txtPassword;
     public Alert alert;
 
+    private UserBo userBo= BoFactory.getInstance().getBo(BoType.USER);
+
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
     }
 
     public void registerOnAction(ActionEvent actionEvent) throws IOException {
-        User user = new User(
-                UUID.randomUUID().toString(),
+        RequestUserDTO user = new RequestUserDTO(
                 txtEmail.getText().trim(),
                 txtDisplayName.getText().trim(),
                 txtContactNumber.getText().trim(),
-                PasswordHash.hashPassword(txtPassword.getText())
+                txtPassword.getText().trim()
         );
         try{
-            boolean isSaved = DatabaseCode.registerUser(user);
+            boolean isSaved = userBo.registerUser(user);
+            System.out.println(isSaved);
             if(isSaved){
                 alert=new Alert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName()));
                 alert.initOwner(context.getScene().getWindow());

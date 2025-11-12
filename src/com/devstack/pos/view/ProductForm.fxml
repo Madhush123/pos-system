@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="context" prefHeight="501.0" prefWidth="996.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.devstack.pos.controller.ProductFormController">
+   <children>
+      <Button layoutX="28.0" layoutY="22.0" mnemonicParsing="false" onAction="#backToScreenOnAction" text="&lt;-- Back">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Label layoutX="112.0" layoutY="19.0" prefHeight="30.0" prefWidth="257.0" text="Product Management" textFill="#840909">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Button layoutX="850.0" layoutY="19.0" mnemonicParsing="false" onAction="#newProductOnAction" style="-fx-background-color: #0652DD;" text="+ New Product" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Separator layoutX="28.0" layoutY="59.0" prefHeight="2.0" prefWidth="942.0" />
+      <TextField fx:id="txtDescription" layoutX="28.0" layoutY="78.0" prefHeight="31.0" prefWidth="286.0" promptText="Product Description">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtUnitPrice" layoutX="324.0" layoutY="78.0" prefHeight="31.0" prefWidth="201.0" promptText="Unit Price">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txtQtyOnHansd" layoutX="535.0" layoutY="78.0" prefHeight="31.0" prefWidth="187.0" promptText="QTY On Hand">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <Button fx:id="btnSaveUpdate" layoutX="796.0" layoutY="77.0" mnemonicParsing="false" onAction="#saveUpdateOnAction" prefHeight="31.0" prefWidth="170.0" style="-fx-background-color: #0652DD;" text="Save Product" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <TextField fx:id="txtSearch" layoutX="28.0" layoutY="124.0" prefHeight="31.0" prefWidth="942.0" promptText="Search Product by (Name,  Code, QR)">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TableView fx:id="tblProducts" layoutX="28.0" layoutY="172.0" prefHeight="306.0" prefWidth="942.0">
+        <columns>
+          <TableColumn fx:id="colId" prefWidth="75.0" text="#Id" />
+          <TableColumn fx:id="colDescription" prefWidth="243.99998474121094" text="Description" />
+            <TableColumn fx:id="colUnitPrice" prefWidth="152.0" text="Unit Price" />
+            <TableColumn fx:id="colQTYOnHand" minWidth="0.0" prefWidth="127.199951171875" text="QTY On Hand" />
+            <TableColumn fx:id="colQRAvailability" minWidth="0.0" prefWidth="127.20001220703125" text="QR Availability" />
+            <TableColumn fx:id="colTools" prefWidth="215.19998779296873" text="Tools" />
+        </columns>
+      </TableView>
+      <ImageView fitHeight="26.0" fitWidth="23.0" layoutX="796.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/bell.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutX="809.0" layoutY="22.0" prefHeight="11.0" prefWidth="20.0" style="-fx-background-color: #510353; -fx-border-radius: 50px; -fx-background-radius: 50px;">
+         <children>
+            <Label fx:id="lblQty" alignment="CENTER" layoutX="-2.0" layoutY="-1.0" prefHeight="12.0" prefWidth="21.0">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <Button layoutX="734.0" layoutY="78.0" mnemonicParsing="false" onAction="#GenQROnAction" prefHeight="31.0" prefWidth="52.0" text="QR" />
+   </children>
+</AnchorPane>
