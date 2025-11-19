@@ -1,5 +1,5 @@
 package com.devstack.pos.util;
 
 public enum BoType {
-    USER,CUSTOMER,PRODUCT
+    USER,CUSTOMER,PRODUCT,ORDER
 }

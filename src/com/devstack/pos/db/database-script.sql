@@ -22,3 +22,24 @@ CREATE TABLE IF NOT EXISTS product(
     qty_on_hand INT NOT NULL,
     qr LONGBLOB
     );
+
+CREATE TABLE IF NOT EXISTS orders(
+    order_id INT PRIMARY KEY,
+    customer_id VARCHAR(80),
+    total_cost DOUBLE NOT NULL,
+    date DATETIME NOT NULL,
+    CONSTRAINT FOREIGN KEY(customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+
+CREATE TABLE IF NOT EXISTS oder_details(
+    order_id INT,
+    product_id VARCHAR(80),
+    unit_price DOUBLE NOT NULL,
+    qty INT NOT NULL,
+    date DATETIME NOT NULL,
+    CONSTRAINT PRIMARY KEY(order_id,product_id),
+    CONSTRAINT FOREIGN KEY(order_id) REFERENCES orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY(product_id) REFERENCES product(product_id) ON DELETE CASCADE ON UPDATE CASCADE
+    );
+
+

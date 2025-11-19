@@ -1,18 +1,18 @@
 package com.devstack.pos.dto.request;
 
-public class RequestCustomerDto {
+public class RequestCustomerDTO {
     private String name;
     private String address;
     private double salary;
 
-    public RequestCustomerDto(String name, String address, double salary) {
+    public RequestCustomerDTO(String name, String address, double salary) {
 
         this.name = name;
         this.address = address;
         this.salary = salary;
     }
 
-    public RequestCustomerDto() {
+    public RequestCustomerDTO() {
     }
 
     public String getName() {

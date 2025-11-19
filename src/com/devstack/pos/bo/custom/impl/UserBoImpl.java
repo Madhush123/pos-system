@@ -14,8 +14,7 @@ import java.util.UUID;
 
 public class UserBoImpl implements UserBo {
 
-    //private UserDao userDao=(UserDao) DaoFactory.getInstance().getDao(DaoType.USER);
-    private UserDao userDao=DaoFactory.getInstance().getDao(DaoType.USER);
+    private final UserDao userDao=DaoFactory.getInstance().getDao(DaoType.USER);
 
     @Override
     public boolean registerUser(RequestUserDTO userDTO) throws SQLException, ClassNotFoundException {

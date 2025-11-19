@@ -1,5 +1,6 @@
 package com.devstack.pos.dao.custom.impl;
 
+import com.devstack.pos.dao.CrudDao;
 import com.devstack.pos.dao.CrudUtil;
 import com.devstack.pos.dao.custom.CustomerDao;
 import com.devstack.pos.entity.Customer;
@@ -10,16 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDaoImpl implements CustomerDao {
-    @Override
-    public List<Customer> searchAll(String searchText) throws SQLException, ClassNotFoundException {
-        searchText="%"+searchText+"%";
-        ResultSet resultSet = CrudUtil.execute("SELECT * FROM customer WHERE name LIKE ? OR address LIKE ?", searchText, searchText);
-        List<Customer> customers = new ArrayList<>();
-        while(resultSet.next()){
-            customers.add(toCustomer(resultSet));
-        }
-        return customers;
-    }
 
     @Override
     public boolean save(Customer customer) throws SQLException, ClassNotFoundException {
@@ -50,7 +41,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public Customer findById(String s) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet=CrudUtil.execute("SEARCH * FROM customer WHERE customer_id=?",s);
+        ResultSet resultSet=CrudUtil.execute("SELECT * FROM customer WHERE customer_id=?",s);
         if(resultSet.next()){
             return toCustomer(resultSet);
         }
@@ -58,8 +49,9 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public List<Customer> findAll() throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = CrudUtil.execute("SELECT * FROM customer");
+    public List<Customer> findAll(String searchText) throws SQLException, ClassNotFoundException {
+        searchText="%"+searchText+"%";
+        ResultSet resultSet = CrudUtil.execute("SELECT * FROM customer WHERE name LIKE ? OR address LIKE ?", searchText, searchText);
         List<Customer> customers = new ArrayList<>();
         while(resultSet.next()){
             customers.add(toCustomer(resultSet));
@@ -77,5 +69,15 @@ public class CustomerDaoImpl implements CustomerDao {
                rs.getString(4),
                rs.getDouble(3)
        );
+    }
+
+    @Override
+    public List<String> loadAllIds() throws SQLException, ClassNotFoundException {
+        ResultSet rs=CrudUtil.execute("SELECT customer_id FROM customer");
+        List<String> ids=new ArrayList<>();
+        while(rs.next()){
+            ids.add(rs.getString(1));
+        }
+        return ids;
     }
 }

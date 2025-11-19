@@ -4,6 +4,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.oned.Code128Writer;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,11 +12,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class QRGenerator {
-    /* public static byte[] generateQRCodeImageBytes(String text, int width, int height)
-            throws WriterException, IOException {
+    public static byte[] generateQRCodeImageBytes(String text, int width, int height) throws IOException, WriterException {
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.CODABAR, width, height);
+        BitMatrix bitMatrix = null;
+        bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         for (int x = 0; x < width; x++) {
@@ -27,9 +29,9 @@ public class QRGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
         return baos.toByteArray();
-    }*/
+    }
 
-    public static byte[] generateBarcodeImageBytes(String text, int width, int height)
+   /* public static byte[] generateBarcodeImageBytes(String text, int width, int height)
             throws WriterException, IOException {
 
         Code128Writer barcodeWriter = new Code128Writer();
@@ -45,5 +47,7 @@ public class QRGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
         return baos.toByteArray();
-    }
+    }*/
+
+
 }

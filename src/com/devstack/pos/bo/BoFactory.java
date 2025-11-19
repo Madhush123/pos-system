@@ -1,6 +1,8 @@
 package com.devstack.pos.bo;
 
 import com.devstack.pos.bo.custom.impl.CustomerBoImpl;
+import com.devstack.pos.bo.custom.impl.OrderBoImpl;
+import com.devstack.pos.bo.custom.impl.ProductBoImpl;
 import com.devstack.pos.bo.custom.impl.UserBoImpl;
 import com.devstack.pos.dao.custom.impl.UserDaoImpl;
 import com.devstack.pos.util.BoType;
@@ -15,20 +17,6 @@ public class BoFactory {
         return boFactory;
     }
 
-   /* public SuperDao getDao(DaoType daoType) {
-        switch (daoType) {
-            case USER:
-                return new UserDaoImpl();
-            case CUSTOMER:
-                return null;
-            case PRODUCT:
-                return null;
-            default:
-                return null;
-
-        }
-    }*/
-
     public <T> T getBo(BoType boType) {
         switch (boType) {
             case USER:
@@ -36,7 +24,9 @@ public class BoFactory {
             case CUSTOMER:
                 return (T) new CustomerBoImpl();
             case PRODUCT:
-                return null;
+                return (T) new ProductBoImpl();
+            case ORDER:
+                return (T) new OrderBoImpl();
             default:
                 return null;
 

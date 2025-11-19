@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -43,19 +44,13 @@ public class RegisterFormController {
             boolean isSaved = userBo.registerUser(user);
             System.out.println(isSaved);
             if(isSaved){
-                alert=new Alert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName()));
-                alert.initOwner(context.getScene().getWindow());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName()),ButtonType.OK);
                 setUi("LoginForm");
             }else{
-                alert=new Alert(Alert.AlertType.WARNING,"Try Again!");
-                alert.initOwner(context.getScene().getWindow());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING,"Try Again!",ButtonType.OK);
             }
         }catch (ClassNotFoundException | SQLException e){
-            alert=new Alert(Alert.AlertType.ERROR,"User already exists!");
-            alert.initOwner(context.getScene().getWindow());
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR,"User already exists!",ButtonType.OK);
             e.printStackTrace();
         }
     }
@@ -67,5 +62,11 @@ public class RegisterFormController {
         stage.setScene(
                 new Scene(load)
         );
+    }
+
+    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
+        Alert alert = new Alert(AlertType, message, btnType);
+        alert.initOwner(context.getScene().getWindow());
+        alert.showAndWait();
     }
 }

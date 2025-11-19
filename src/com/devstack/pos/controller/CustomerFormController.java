@@ -2,8 +2,8 @@ package com.devstack.pos.controller;
 
 import com.devstack.pos.bo.BoFactory;
 import com.devstack.pos.bo.custom.CustomerBo;
-import com.devstack.pos.dto.request.RequestCustomerDto;
-import com.devstack.pos.dto.response.ResponseCustomerDto;
+import com.devstack.pos.dto.request.RequestCustomerDTO;
+import com.devstack.pos.dto.response.ResponseCustomerDTO;
 import com.devstack.pos.util.BoType;
 import com.devstack.pos.view.tm.CustomerTm;
 import javafx.collections.FXCollections;
@@ -38,7 +38,6 @@ public class CustomerFormController {
     public TableColumn<CustomerTm, Double> colSalary;
     public TableColumn<CustomerTm, ButtonBar> colTools;
 
-
     private  String searchText="";
     private String selectedCustomerId=null;
 
@@ -72,40 +71,42 @@ public class CustomerFormController {
     public void saveUpdateOnAction(ActionEvent actionEvent) {
         if(btnSave.getText().equalsIgnoreCase("Save Customer")) {
            try{
-               customerBo.saveCustomer(
-                       new RequestCustomerDto(
+               boolean isSaved=customerBo.saveCustomer(
+                       new RequestCustomerDTO(
                                txtName.getText().trim(),
                                txtAddress.getText().trim(),
                                Double.parseDouble(txtSalary.getText())
                        )
                );
-               new Alert(Alert.AlertType.INFORMATION, "Customer Saved Successfully",ButtonType.OK).show();
-               searchAll();
-               clearAll();
+               if(isSaved){
+                   showAlert(Alert.AlertType.INFORMATION, "Customer Saved Successfully",ButtonType.OK);
+                   searchAll();
+                   clearAll();
+               }
 
            }catch (SQLException | ClassNotFoundException e){
-               new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
+               showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
             }
         }else{
 
             if(selectedCustomerId==null){
-                new Alert(Alert.AlertType.WARNING, "Please select the customer").show();
+                showAlert(Alert.AlertType.WARNING, "Please select the customer", ButtonType.OK);
                 return;
             }
             try{
                 customerBo.updateCustomer(
-                        new RequestCustomerDto(
+                        new RequestCustomerDTO(
                                 txtName.getText().trim(),
                                 txtAddress.getText().trim(),
                                 Double.parseDouble(txtSalary.getText())
                         ),selectedCustomerId
                 );
-                new Alert(Alert.AlertType.INFORMATION, "Customer Updated Successfully",ButtonType.OK).show();
+                showAlert(Alert.AlertType.INFORMATION, "Customer Updated Successfully",ButtonType.OK);
                 searchAll();
                 clearAll();
 
             }catch (SQLException | ClassNotFoundException e){
-                new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
+                showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
             }
         }
     }
@@ -120,18 +121,18 @@ public class CustomerFormController {
 
     private void searchAll() {
         try {
-            List<ResponseCustomerDto> list=customerBo.searchCustomers(searchText);
+            List<ResponseCustomerDTO> list=customerBo.searchCustomers(searchText);
             ObservableList<CustomerTm> items= FXCollections.observableArrayList();
             long id=1;
 
-            for(ResponseCustomerDto rc:list){
+            for(ResponseCustomerDTO rc:list){
 
                 ButtonBar bar=new ButtonBar();
                 Button updateButton=new Button("Update");
                 Button deleteButton=new Button("Delete");
+
                 updateButton.setStyle("-fx-background-color: green;-fx-text-fill: white");
                 deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white");
-
 
                 bar.getButtons().addAll(updateButton,deleteButton);
 
@@ -152,16 +153,15 @@ public class CustomerFormController {
                 });
 
                 deleteButton.setOnAction(actionEvent -> {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.NO,ButtonType.YES);
-                    Optional<ButtonType> buttonType = alert.showAndWait();
+                    Optional<ButtonType> buttonType= showAlert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.NO,ButtonType.YES);
                     if(buttonType.get()==ButtonType.YES){
                         try {
                             customerBo.deleteCustomer(rc.getCustomerId());
                             System.out.println(rc.getCustomerId());
-                            new Alert(Alert.AlertType.INFORMATION,"Customer Deleted",ButtonType.OK).show();
+                            showAlert(Alert.AlertType.INFORMATION,"Customer Deleted",ButtonType.OK);
                             searchAll();
                         }catch (SQLException|ClassNotFoundException e){
-                            new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
+                            showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
                         }
                     }
                 });
@@ -183,6 +183,18 @@ public class CustomerFormController {
         stage.setScene(
                 new Scene(load)
         );
+    }
+
+    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
+        Alert alert = new Alert(AlertType, message, btnType);
+        alert.initOwner(context.getScene().getWindow());
+        alert.showAndWait();
+    }
+
+    private Optional<ButtonType> showAlert(Alert.AlertType AlertType, String message, ButtonType btnType1,ButtonType btnType2) {
+        Alert alert = new Alert(AlertType, message, btnType1,btnType2);
+        alert.initOwner(context.getScene().getWindow());
+        return alert.showAndWait();
     }
 
 }

@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -23,7 +24,6 @@ public class LoginFormController {
     public AnchorPane context;
     public TextField txtEmail;
     public PasswordField txtPassword;
-    public Alert alert;
 
     private UserBo userBo= BoFactory.getInstance().getBo(BoType.USER);
 
@@ -37,20 +37,14 @@ public class LoginFormController {
                     txtEmail.getText().trim(), txtPassword.getText()
             );
             if(loginData.isStatus()){
-                alert=new Alert(Alert.AlertType.INFORMATION,loginData.getMsg());
-                alert.initOwner(context.getScene().getWindow());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.INFORMATION,loginData.getMsg(),ButtonType.OK);
                 SystemVariables.responseUserDTO=loginData;
                 setUi("DashboardForm");
             }else{
-                alert=new Alert(Alert.AlertType.WARNING,loginData.getMsg());
-                alert.initOwner(context.getScene().getWindow());
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING,loginData.getMsg(),ButtonType.OK);
             }
         }catch (ClassNotFoundException | SQLException e){
-            alert=new Alert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")");
-            alert.initOwner(context.getScene().getWindow());
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")",ButtonType.OK);
             e.printStackTrace();
         }
     }
@@ -66,5 +60,11 @@ public class LoginFormController {
         stage.setScene(
                 new Scene(load)
         );
+    }
+
+    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
+        Alert alert = new Alert(AlertType, message, btnType);
+        alert.initOwner(context.getScene().getWindow());
+        alert.showAndWait();
     }
 }

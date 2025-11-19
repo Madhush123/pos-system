@@ -56,9 +56,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAll(String searchText) throws SQLException, ClassNotFoundException {
         return List.of();
     }
-
 
 }

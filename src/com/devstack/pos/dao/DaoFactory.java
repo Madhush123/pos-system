@@ -1,7 +1,6 @@
 package com.devstack.pos.dao;
 
-import com.devstack.pos.dao.custom.impl.CustomerDaoImpl;
-import com.devstack.pos.dao.custom.impl.UserDaoImpl;
+import com.devstack.pos.dao.custom.impl.*;
 import com.devstack.pos.entity.User;
 import com.devstack.pos.util.DaoType;
 
@@ -15,20 +14,6 @@ public class DaoFactory {
         return daoFactory;
     }
 
-   /* public SuperDao getDao(DaoType daoType) {
-        switch (daoType) {
-            case USER:
-                return new UserDaoImpl();
-            case CUSTOMER:
-                return null;
-            case PRODUCT:
-                return null;
-            default:
-                return null;
-
-        }
-    }*/
-
     public <T> T getDao(DaoType daoType) {
         switch (daoType) {
             case USER:
@@ -36,7 +21,11 @@ public class DaoFactory {
             case CUSTOMER:
                 return (T) new CustomerDaoImpl();
             case PRODUCT:
-                return null;
+                return (T) new ProductDaoImpl();
+            case ORDER:
+                return (T) new OrderDaoImpl();
+            case ORDER_DETAIL:
+                return (T) new OrderDetailDaoImpl();
             default:
                 return null;
 

@@ -75,7 +75,8 @@ public class DashboardFormController {
     }
 
     private void setStaticData() {
-
+        lblVersion.setText("Version : "+ StaticResource.getVersion());
+        lblCompany.setText("From : "+ StaticResource.getCompany());
     }
 
     public void logoutOnAction(ActionEvent actionEvent) {
@@ -89,5 +90,9 @@ public class DashboardFormController {
 
     public void openProductFormOnAction(MouseEvent mouseEvent) throws IOException {
         setUi("ProductForm");
+    }
+
+    public void openPlaceOrderFormOnAction(MouseEvent mouseEvent) throws IOException {
+        setUi("PlaceOrderForm");
     }
 }

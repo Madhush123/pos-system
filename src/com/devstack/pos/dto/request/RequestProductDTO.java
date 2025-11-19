@@ -1,29 +1,18 @@
-package com.devstack.pos.dto.response;
+package com.devstack.pos.dto.request;
 
-public class ResponseProductDto {
-    private String productId;
+public class RequestProductDTO {
     private String description;
     private double unitPrice;
     private int qtyOnHand;
-    private byte[] qr;
 
-    public ResponseProductDto() {
+
+    public RequestProductDTO() {
     }
 
-    public ResponseProductDto(String productId, String description, double unitPrice, int qtyOnHand, byte[] qr) {
-        this.productId = productId;
+    public RequestProductDTO(String description, double unitPrice, int qtyOnHand) {
         this.description = description;
         this.unitPrice = unitPrice;
         this.qtyOnHand = qtyOnHand;
-        this.qr = qr;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
     }
 
     public String getDescription() {
@@ -50,11 +39,4 @@ public class ResponseProductDto {
         this.qtyOnHand = qtyOnHand;
     }
 
-    public byte[] getQr() {
-        return qr;
-    }
-
-    public void setQr(byte[] qr) {
-        this.qr = qr;
-    }
 }

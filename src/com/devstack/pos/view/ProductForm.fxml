@@ -19,7 +19,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Label layoutX="112.0" layoutY="19.0" prefHeight="30.0" prefWidth="257.0" text="Product Management" textFill="#840909">
+      <Label layoutX="108.0" layoutY="19.0" prefHeight="30.0" prefWidth="257.0" text="Product Management" textFill="#840909">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -33,17 +33,17 @@
          </cursor>
       </Button>
       <Separator layoutX="28.0" layoutY="59.0" prefHeight="2.0" prefWidth="942.0" />
-      <TextField fx:id="txtDescription" layoutX="28.0" layoutY="78.0" prefHeight="31.0" prefWidth="286.0" promptText="Product Description">
+      <TextField fx:id="txtDescription" layoutX="28.0" layoutY="78.0" prefHeight="31.0" prefWidth="311.0" promptText="Product Description">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtUnitPrice" layoutX="324.0" layoutY="78.0" prefHeight="31.0" prefWidth="201.0" promptText="Unit Price">
+      <TextField fx:id="txtUnitPrice" layoutX="349.0" layoutY="78.0" prefHeight="31.0" prefWidth="221.0" promptText="Unit Price">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtQtyOnHansd" layoutX="535.0" layoutY="78.0" prefHeight="31.0" prefWidth="187.0" promptText="QTY On Hand">
+      <TextField fx:id="txtQtyOnHansd" layoutX="579.0" layoutY="78.0" prefHeight="31.0" prefWidth="202.0" promptText="QTY On Hand">
          <font>
             <Font size="15.0" />
          </font>
@@ -71,20 +71,19 @@
             <TableColumn fx:id="colTools" prefWidth="215.19998779296873" text="Tools" />
         </columns>
       </TableView>
-      <ImageView fitHeight="26.0" fitWidth="23.0" layoutX="796.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="794.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/bell.png" />
          </image>
       </ImageView>
-      <AnchorPane layoutX="809.0" layoutY="22.0" prefHeight="11.0" prefWidth="20.0" style="-fx-background-color: #510353; -fx-border-radius: 50px; -fx-background-radius: 50px;">
+      <AnchorPane layoutX="810.0" layoutY="19.0" prefHeight="11.0" prefWidth="23.0" style="-fx-background-color: #510353; -fx-border-radius: 50px; -fx-background-radius: 50px;">
          <children>
-            <Label fx:id="lblQty" alignment="CENTER" layoutX="-2.0" layoutY="-1.0" prefHeight="12.0" prefWidth="21.0">
+            <Label fx:id="lblQty" alignment="CENTER" prefHeight="12.0" prefWidth="23.0" textFill="WHITE">
                <font>
-                  <Font size="8.0" />
+                  <Font name="System Bold" size="9.0" />
                </font>
             </Label>
          </children>
       </AnchorPane>
-      <Button layoutX="734.0" layoutY="78.0" mnemonicParsing="false" onAction="#GenQROnAction" prefHeight="31.0" prefWidth="52.0" text="QR" />
    </children>
 </AnchorPane>

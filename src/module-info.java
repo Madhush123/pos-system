@@ -6,6 +6,8 @@ module pos.system {
     requires jbcrypt;
     requires core;
     requires java.desktop;
+    requires mysql.connector.java;
+    requires kotlin.stdlib;
 
     opens com.devstack.pos to javafx.fxml;
     opens com.devstack.pos.controller to javafx.fxml;

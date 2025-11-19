@@ -7,5 +7,5 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface CustomerDao extends CrudDao<Customer,String> {
-    public List<Customer> searchAll(String searchText) throws SQLException, ClassNotFoundException;
+    List<String> loadAllIds() throws SQLException, ClassNotFoundException;
 }

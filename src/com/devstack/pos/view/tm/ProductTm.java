@@ -1,19 +1,20 @@
 package com.devstack.pos.view.tm;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 
 public class ProductTm {
-    private String id;
+    private long id;
     private String description;
     private double unitPrice;
     private int qtyOnHand;
-    private String qrAvailability;
+    private Button qrAvailability;
     private ButtonBar tools;
 
     public ProductTm() {
     }
 
-    public ProductTm(String id, String description, double unitPrice, int qtyOnHand, String qrAvailability, ButtonBar tools) {
+    public ProductTm(long id, String description, double unitPrice, int qtyOnHand, Button qrAvailability, ButtonBar tools) {
         this.id = id;
         this.description = description;
         this.unitPrice = unitPrice;
@@ -22,11 +23,11 @@ public class ProductTm {
         this.tools = tools;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -54,11 +55,11 @@ public class ProductTm {
         this.qtyOnHand = qtyOnHand;
     }
 
-    public String getQrAvailability() {
+    public Button getQrAvailability() {
         return qrAvailability;
     }
 
-    public void setQrAvailability(String qrAvailability) {
+    public void setQrAvailability(Button qrAvailability) {
         this.qrAvailability = qrAvailability;
     }
 
