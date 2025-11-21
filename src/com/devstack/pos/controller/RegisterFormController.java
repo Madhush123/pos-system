@@ -1,9 +1,9 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.bo.BoFactory;
-import com.devstack.pos.bo.custom.UserBo;
+import com.devstack.pos.bo.BOFactory;
+import com.devstack.pos.bo.custom.UserBO;
 import com.devstack.pos.dto.request.RequestUserDTO;
-import com.devstack.pos.util.BoType;
+import com.devstack.pos.util.BOType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,30 +27,55 @@ public class RegisterFormController {
     public PasswordField txtPassword;
     public Alert alert;
 
-    private UserBo userBo= BoFactory.getInstance().getBo(BoType.USER);
+    private UserBO userBo= BOFactory.getInstance().getBo(BOType.USER);
 
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
     }
 
     public void registerOnAction(ActionEvent actionEvent) throws IOException {
-        RequestUserDTO user = new RequestUserDTO(
-                txtEmail.getText().trim(),
-                txtDisplayName.getText().trim(),
-                txtContactNumber.getText().trim(),
-                txtPassword.getText().trim()
-        );
+
+        String email=txtEmail.getText().trim();
+        String name=txtDisplayName.getText().trim();
+        String contact=txtContactNumber.getText().trim();
+        String password=txtPassword.getText().trim();
+
+        // Regex patterns
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        String contactRegex = "^[0-9]{10}$"; // Adjust if your contact number format differs
+
+        if (email.isEmpty() || name.isEmpty() || contact.isEmpty() || password.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "All fields are required!").show();
+            return;
+        }
+
+        if (!email.matches(emailRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid email address!").show();
+            return;
+        }
+
+        if (!contact.matches(contactRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid contact number! Must be 10 digits.").show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            new Alert(Alert.AlertType.WARNING, "Password must be at least 6 characters long!").show();
+            return;
+        }
+
+        RequestUserDTO user = new RequestUserDTO(email, name, contact, password);
         try{
             boolean isSaved = userBo.registerUser(user);
             System.out.println(isSaved);
             if(isSaved){
-                showAlert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName()),ButtonType.OK);
+                new Alert(Alert.AlertType.INFORMATION,String.format("User Saved %s",user.getDisplayName()),ButtonType.OK).show();
                 setUi("LoginForm");
             }else{
-                showAlert(Alert.AlertType.WARNING,"Try Again!",ButtonType.OK);
+                new Alert(Alert.AlertType.WARNING,"Try Again!",ButtonType.OK).show();
             }
         }catch (ClassNotFoundException | SQLException e){
-            showAlert(Alert.AlertType.ERROR,"User already exists!",ButtonType.OK);
+            new Alert(Alert.AlertType.ERROR,"User already exists!",ButtonType.OK).show();
             e.printStackTrace();
         }
     }
@@ -64,9 +89,5 @@ public class RegisterFormController {
         );
     }
 
-    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
-        Alert alert = new Alert(AlertType, message, btnType);
-        alert.initOwner(context.getScene().getWindow());
-        alert.showAndWait();
-    }
+
 }

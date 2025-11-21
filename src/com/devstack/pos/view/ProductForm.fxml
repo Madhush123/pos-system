@@ -43,7 +43,7 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtQtyOnHansd" layoutX="579.0" layoutY="78.0" prefHeight="31.0" prefWidth="202.0" promptText="QTY On Hand">
+      <TextField fx:id="txtQtyOnHand" layoutX="579.0" layoutY="78.0" prefHeight="31.0" prefWidth="202.0" promptText="QTY On Hand">
          <font>
             <Font size="15.0" />
          </font>

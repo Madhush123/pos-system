@@ -1,6 +1,6 @@
 package com.devstack.pos.dao.custom.impl;
 
-import com.devstack.pos.dao.custom.UserDao;
+import com.devstack.pos.dao.custom.UserDAO;
 import com.devstack.pos.entity.User;
 import com.devstack.pos.util.PasswordHash;
 
@@ -15,7 +15,7 @@ class UserDaoImplTest {
 
 
     void save() throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDaoImpl();
+        UserDAO dao = new UserDAOImpl();
         User user = new User(
                 UUID.randomUUID().toString(),
                 "abc@gmail.com",

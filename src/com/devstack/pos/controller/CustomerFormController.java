@@ -1,11 +1,11 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.bo.BoFactory;
-import com.devstack.pos.bo.custom.CustomerBo;
+import com.devstack.pos.bo.BOFactory;
+import com.devstack.pos.bo.custom.CustomerBO;
 import com.devstack.pos.dto.request.RequestCustomerDTO;
 import com.devstack.pos.dto.response.ResponseCustomerDTO;
-import com.devstack.pos.util.BoType;
-import com.devstack.pos.view.tm.CustomerTm;
+import com.devstack.pos.util.BOType;
+import com.devstack.pos.view.tm.CustomerTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,12 +31,12 @@ public class CustomerFormController {
     public TextField txtAddress;
     public Button btnSave;
     public TextField txtSearch;
-    public TableView<CustomerTm> tblCustomers;
-    public TableColumn<CustomerTm, Long> colId;
-    public TableColumn<CustomerTm, String> colName;
-    public TableColumn<CustomerTm, String> colAddress;
-    public TableColumn<CustomerTm, Double> colSalary;
-    public TableColumn<CustomerTm, ButtonBar> colTools;
+    public TableView<CustomerTM> tblCustomers;
+    public TableColumn<CustomerTM, Long> colId;
+    public TableColumn<CustomerTM, String> colName;
+    public TableColumn<CustomerTM, String> colAddress;
+    public TableColumn<CustomerTM, Double> colSalary;
+    public TableColumn<CustomerTM, ButtonBar> colTools;
 
     private  String searchText="";
     private String selectedCustomerId=null;
@@ -58,7 +58,7 @@ public class CustomerFormController {
         });
     }
 
-    private CustomerBo customerBo= BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private CustomerBO customerBo= BOFactory.getInstance().getBo(BOType.CUSTOMER);
 
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("DashboardForm");
@@ -69,44 +69,72 @@ public class CustomerFormController {
     }
 
     public void saveUpdateOnAction(ActionEvent actionEvent) {
+        String name = txtName.getText().trim();
+        String address = txtAddress.getText().trim();
+        String salaryText = txtSalary.getText().trim();
+
+        // Regex patterns
+        String nameRegex = "^[A-Za-z ]{3,}$"; // At least 3 letters, spaces allowed
+        String addressRegex = "^[A-Za-z0-9 ,.-/]{5,}$"; // Letters, numbers, and basic punctuation
+        String salaryRegex = "^[0-9]+(\\.[0-9]{1,2})?$"; // e.g. 1000 or 1000.50
+
+        // --- Validation ---
+        if (name.isEmpty() || address.isEmpty() || salaryText.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "All fields are required!").show();
+            return;
+        }
+
+        if (!name.matches(nameRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid name! Use letters only (min 3 characters).").show();
+            return;
+        }
+
+        if (!address.matches(addressRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid address! Minimum 5 characters.").show();
+            return;
+        }
+
+        if (!salaryText.matches(salaryRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid salary format! Example: 50000 or 50000.75").show();
+            return;
+        }
+
+        double salary = Double.parseDouble(salaryText);
+        if (salary <= 0) {
+            new Alert(Alert.AlertType.WARNING, "Salary must be greater than 0!").show();
+            return;
+        }
+
         if(btnSave.getText().equalsIgnoreCase("Save Customer")) {
            try{
                boolean isSaved=customerBo.saveCustomer(
-                       new RequestCustomerDTO(
-                               txtName.getText().trim(),
-                               txtAddress.getText().trim(),
-                               Double.parseDouble(txtSalary.getText())
-                       )
+                       new RequestCustomerDTO(name,address,salary)
                );
                if(isSaved){
-                   showAlert(Alert.AlertType.INFORMATION, "Customer Saved Successfully",ButtonType.OK);
+                   new Alert(Alert.AlertType.INFORMATION, "Customer Saved Successfully",ButtonType.OK).show();
                    searchAll();
                    clearAll();
                }
 
            }catch (SQLException | ClassNotFoundException e){
-               showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
+               new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
             }
         }else{
 
             if(selectedCustomerId==null){
-                showAlert(Alert.AlertType.WARNING, "Please select the customer", ButtonType.OK);
+                new Alert(Alert.AlertType.WARNING, "Please select the customer", ButtonType.OK).show();
                 return;
             }
             try{
                 customerBo.updateCustomer(
-                        new RequestCustomerDTO(
-                                txtName.getText().trim(),
-                                txtAddress.getText().trim(),
-                                Double.parseDouble(txtSalary.getText())
-                        ),selectedCustomerId
+                        new RequestCustomerDTO(name,address,salary),selectedCustomerId
                 );
-                showAlert(Alert.AlertType.INFORMATION, "Customer Updated Successfully",ButtonType.OK);
+                new Alert(Alert.AlertType.INFORMATION, "Customer Updated Successfully",ButtonType.OK).show();
                 searchAll();
                 clearAll();
 
             }catch (SQLException | ClassNotFoundException e){
-                showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
+                new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
             }
         }
     }
@@ -122,7 +150,7 @@ public class CustomerFormController {
     private void searchAll() {
         try {
             List<ResponseCustomerDTO> list=customerBo.searchCustomers(searchText);
-            ObservableList<CustomerTm> items= FXCollections.observableArrayList();
+            ObservableList<CustomerTM> items= FXCollections.observableArrayList();
             long id=1;
 
             for(ResponseCustomerDTO rc:list){
@@ -136,7 +164,7 @@ public class CustomerFormController {
 
                 bar.getButtons().addAll(updateButton,deleteButton);
 
-                CustomerTm item=new CustomerTm(
+                CustomerTM item=new CustomerTM(
                         id++,
                         rc.getName(),
                         rc.getAddress(),
@@ -153,15 +181,16 @@ public class CustomerFormController {
                 });
 
                 deleteButton.setOnAction(actionEvent -> {
-                    Optional<ButtonType> buttonType= showAlert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.NO,ButtonType.YES);
+                    Alert alert=new Alert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.NO,ButtonType.YES);
+                    Optional<ButtonType> buttonType=alert.showAndWait();
                     if(buttonType.get()==ButtonType.YES){
                         try {
                             customerBo.deleteCustomer(rc.getCustomerId());
                             System.out.println(rc.getCustomerId());
-                            showAlert(Alert.AlertType.INFORMATION,"Customer Deleted",ButtonType.OK);
+                            new Alert(Alert.AlertType.INFORMATION,"Customer Deleted",ButtonType.OK).show();
                             searchAll();
                         }catch (SQLException|ClassNotFoundException e){
-                            showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
+                            new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
                         }
                     }
                 });
@@ -185,6 +214,7 @@ public class CustomerFormController {
         );
     }
 
+/*
     private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
         Alert alert = new Alert(AlertType, message, btnType);
         alert.initOwner(context.getScene().getWindow());
@@ -196,5 +226,6 @@ public class CustomerFormController {
         alert.initOwner(context.getScene().getWindow());
         return alert.showAndWait();
     }
+*/
 
 }

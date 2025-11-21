@@ -32,7 +32,7 @@
          </cursor>
       </Button>
       <Separator layoutX="28.0" layoutY="58.0" prefHeight="4.0" prefWidth="1150.0" />
-      <TextField fx:id="txtName" layoutX="355.0" layoutY="94.0" prefHeight="31.0" prefWidth="264.0" promptText="Custmer Name">
+      <TextField fx:id="txtName" layoutX="355.0" layoutY="94.0" prefHeight="31.0" prefWidth="264.0" promptText="Customer Name">
          <font>
             <Font size="15.0" />
          </font>
@@ -42,19 +42,19 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="txtAddress" layoutX="881.0" layoutY="94.0" prefHeight="31.0" prefWidth="294.0" promptText="Custmer Address">
+      <TextField fx:id="txtAddress" layoutX="881.0" layoutY="94.0" prefHeight="31.0" prefWidth="294.0" promptText="Customer Address">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
       <TableView fx:id="tblProduct" layoutX="27.0" layoutY="262.0" prefHeight="292.0" prefWidth="1149.0">
         <columns>
-          <TableColumn fx:id="colId" prefWidth="75.0" text="#Id" />
-          <TableColumn fx:id="colDescription" prefWidth="312.2666778564453" text="Description" />
-            <TableColumn fx:id="colUnitPrice" prefWidth="201.33334350585938" text="Unit Price" />
-            <TableColumn fx:id="colQty" minWidth="0.0" prefWidth="158.666748046875" text="QTY" />
-            <TableColumn fx:id="colTotal" minWidth="0.0" prefWidth="206.4000244140625" text="Total" />
-            <TableColumn fx:id="colTools" minWidth="0.0" prefWidth="195.466796875" text="Tools" />
+          <TableColumn fx:id="colId" prefWidth="228.80002975463867" text="#Id" />
+          <TableColumn fx:id="colDescription" prefWidth="227.20001220703125" text="Description" />
+            <TableColumn fx:id="colUnitPrice" prefWidth="192.79995727539062" text="Unit Price" />
+            <TableColumn fx:id="colQty" minWidth="0.0" prefWidth="148.7999267578125" text="QTY" />
+            <TableColumn fx:id="colTotal" minWidth="0.0" prefWidth="178.39990234375" text="Total" />
+            <TableColumn fx:id="colTools" minWidth="0.0" prefWidth="180.800048828125" text="Tools" />
         </columns>
       </TableView>
       <Label layoutX="28.0" layoutY="63.0" prefHeight="30.0" prefWidth="133.0" text="Customer Details" textFill="#15006b">

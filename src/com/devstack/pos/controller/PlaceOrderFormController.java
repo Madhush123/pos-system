@@ -1,24 +1,27 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.bo.BoFactory;
-import com.devstack.pos.bo.custom.CustomerBo;
-import com.devstack.pos.bo.custom.OrderBo;
-import com.devstack.pos.bo.custom.ProductBo;
+import com.devstack.pos.bo.BOFactory;
+import com.devstack.pos.bo.custom.CustomerBO;
+import com.devstack.pos.bo.custom.OrderBO;
+import com.devstack.pos.bo.custom.ProductBO;
 import com.devstack.pos.dto.request.RequestOrderDTO;
 import com.devstack.pos.dto.request.RequestOrderDetailsDTO;
 import com.devstack.pos.dto.response.ResponseCustomerDTO;
 import com.devstack.pos.dto.response.ResponseProductDTO;
-import com.devstack.pos.util.BoType;
+import com.devstack.pos.util.BOType;
 import com.devstack.pos.view.tm.CartTM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.print.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -49,12 +52,14 @@ public class PlaceOrderFormController {
     public Label lblTotal;
     public TextField txtProductCode;
 
-    private final OrderBo orderBo= BoFactory.getInstance().getBo(BoType.ORDER);
-    private final CustomerBo customerBo= BoFactory.getInstance().getBo(BoType.CUSTOMER);
-    private final ProductBo productBo= BoFactory.getInstance().getBo(BoType.PRODUCT);
+    private final OrderBO orderBo= BOFactory.getInstance().getBo(BOType.ORDER);
+    private final CustomerBO customerBo= BOFactory.getInstance().getBo(BOType.CUSTOMER);
+    private final ProductBO productBo= BOFactory.getInstance().getBo(BOType.PRODUCT);
 
     private int orderId;
     private double fullTotal=0;
+
+    ResponseCustomerDTO selectedCustomer;
 
     public void initialize() {
 
@@ -78,6 +83,16 @@ public class PlaceOrderFormController {
         txtProductCode.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 setProductDetails(newValue);
+            }
+        });
+
+        txtProductCode.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                txtProductCode.clear();
+                txtDescription.clear();
+                txtUnitPrice.clear();
+                txtQtyOnHand.clear();
+
             }
         });
     }
@@ -110,7 +125,7 @@ public class PlaceOrderFormController {
         try {
              ResponseCustomerDTO selectedCustomer = customerBo.getCustomerById(newValue);
              if (selectedCustomer == null) {
-                 showAlert(Alert.AlertType.WARNING, "Customer not found!", ButtonType.OK);
+                 new Alert(Alert.AlertType.WARNING, "Customer not found!", ButtonType.OK).show();
                  return;
              }
              txtName.setText(selectedCustomer.getName());
@@ -150,29 +165,58 @@ public class PlaceOrderFormController {
     }
 
     public void addToCartOnAction(ActionEvent actionEvent) {
-        int qty=Integer.parseInt(txtQty.getText());
-        int qtyOnHand=Integer.parseInt(txtQtyOnHand.getText());
 
-        if(qtyOnHand<qty ||qty==0){
-            showAlert(Alert.AlertType.WARNING,"Please fill the stock",ButtonType.OK);
+        String productId = txtProductCode.getText().trim();
+        String qtyText = txtQty.getText().trim();
+        String qtyOnHandText = txtQtyOnHand.getText().trim();
+        String unitPriceText = txtUnitPrice.getText().trim();
+        String description = txtDescription.getText().trim();
+
+        // Regex patterns
+        String qtyRegex = "^[0-9]+$";
+        String priceRegex = "^[0-9]+(\\.[0-9]{1,2})?$";
+
+        // --- Field validations ---
+        if (productId.isEmpty() || description.isEmpty() || qtyText.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Please fill all fields before adding to cart!").show();
             return;
         }
 
-        double unitPrice=Double.parseDouble(txtUnitPrice.getText());
+        if (!qtyText.matches(qtyRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid quantity! Must be a positive whole number.").show();
+            return;
+        }
 
-        Button button=new Button("Remove");
-        button.setStyle("-fx-background-color: red; -fx-text-fill: white");
+        if (!unitPriceText.matches(priceRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid unit price format!").show();
+            return;
+        }
 
-        CartTM cartTM=new CartTM(
-                txtProductCode.getText(),
-                txtDescription.getText(),
-                unitPrice,
-                qty,
-                unitPrice*qty,
-                button
-        );
+        if (!qtyOnHandText.matches(qtyRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid stock quantity format!").show();
+            return;
+        }
 
-        button.setOnAction(e -> {
+        int qty = Integer.parseInt(qtyText);
+        int qtyOnHand = Integer.parseInt(qtyOnHandText);
+        double unitPrice = Double.parseDouble(unitPriceText);
+
+        if (qty <= 0) {
+            new Alert(Alert.AlertType.WARNING, "Quantity must be greater than 0!").show();
+            return;
+        }
+
+        if (qty > qtyOnHand) {
+            new Alert(Alert.AlertType.WARNING, "Insufficient stock available!").show();
+            return;
+        }
+
+        // --- Create CartTM ---
+        Button btn = new Button("Remove");
+        btn.setStyle("-fx-background-color: red;-fx-text-fill: white");
+        CartTM cartTM = new CartTM(productId, description, unitPrice, qty, unitPrice * qty, btn);
+
+        btn.setOnAction(e -> {
             for(CartTM t:tms){
                 if(t.getId().equals(cartTM.getId())){
                     tms.remove(t);
@@ -183,7 +227,7 @@ public class PlaceOrderFormController {
             }
         });
 
-        addToTable(cartTM);
+        addToTable(cartTM,qtyOnHand);
         manageTotal();
         txtQty.clear();
     }
@@ -198,13 +242,22 @@ public class PlaceOrderFormController {
 
     ObservableList<CartTM> tms=FXCollections.observableArrayList();
 
-    private void addToTable(CartTM cartTM) {
+    private void addToTable(CartTM cartTM,int qtyOnHand) {
         for(CartTM ctm:tms){
             if(ctm.getId().equals(cartTM.getId())){
-                ctm.setQty(ctm.getQty()+ cartTM.getQty());
-                ctm.setTotal(ctm.getQty()*cartTM.getUnitPrice());
-                tblProduct.refresh();
-                return;
+                int newQty = ctm.getQty() + cartTM.getQty();
+                if(newQty<=qtyOnHand){
+                    ctm.setQty(newQty);
+                    ctm.setTotal(ctm.getQty()*cartTM.getUnitPrice());
+                    tblProduct.refresh();
+                    return;
+                }else {
+                    new Alert(Alert.AlertType.WARNING,
+                            "Not enough stock to add more.",
+                            ButtonType.OK).show();
+                    return;
+                }
+
             }
         }
         tms.add(cartTM);
@@ -213,10 +266,21 @@ public class PlaceOrderFormController {
 
     public void placeOrderOnAction(ActionEvent actionEvent) {
         try {
-        if(orderId==0 || tms.isEmpty()){
-            showAlert(Alert.AlertType.WARNING,"Try again",ButtonType.OK);
-            return;
-        }
+            if (orderId == 0) {
+                new Alert(Alert.AlertType.WARNING, "Order ID not initialized. Please try again!").show();
+                return;
+            }
+
+           /* if (cmbCustomerIds.getValue() == null || cmbCustomerIds.getValue().trim().isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Please select a customer before placing the order!").show();
+                return;
+            }*/
+
+            if (tms.isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Your cart is empty! Please add products first.").show();return;
+            }
+
+
         RequestOrderDTO requestOrderDTO=new RequestOrderDTO();
         List<RequestOrderDetailsDTO> orderDetailsDTOList=new ArrayList<>();
 
@@ -239,7 +303,7 @@ public class PlaceOrderFormController {
                 setOrderId();
                 clearAllFields();
                 printBill();
-                showAlert(Alert.AlertType.INFORMATION,"Order Completed!..",ButtonType.OK);
+                new Alert(Alert.AlertType.INFORMATION,"Order Completed!..",ButtonType.OK).show();
             }
         } catch (SQLException|ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -247,12 +311,71 @@ public class PlaceOrderFormController {
     }
 
     private void printBill() {
+        if (tms.isEmpty()) return;
+
+        VBox billPane = new VBox(5);
+        billPane.setPadding(new Insets(10));
+
+        billPane.getChildren().addAll(
+                new Label("POS SYSTEM BILL"),
+                new Label("Order ID: #" + --orderId),
+                new Label("Customer Name: " + txtName.getText()),
+                new Label("Customer Address: " + txtAddress.getText()),
+                new Label("Date: " + new Date()),
+                new Label("--------------------------------------------------------------------")
+        );
+
+
+        for (CartTM item : tms) {
+            billPane.getChildren().add(new Label(
+                    item.getDescription() + " | Qty: " + item.getQty() +
+                            " | Unit Price: " + String.format("%.2f", item.getUnitPrice()) +
+                            " | Total: " + String.format("%.2f", item.getTotal())
+            ));
+        }
+        billPane.getChildren().addAll(
+                new Label("--------------------------------------------------------------------"),
+                new Label("TOTAL: " + String.format("%.2f", fullTotal)));
+
+        // Use default printer / PDF printer
+        Printer pdfPrinter = null;
+        for (Printer p : Printer.getAllPrinters()) {
+            if (p.getName().toLowerCase().contains("pdf")) {
+                pdfPrinter = p;
+                break;
+            }
+        }
+
+        if (pdfPrinter == null) {
+            new Alert(Alert.AlertType.ERROR, "No PDF printer found!").show();
+        }
+
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            job.setPrinter(pdfPrinter);
+
+            PageLayout pageLayout = pdfPrinter.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.DEFAULT);
+            job.getJobSettings().setPageLayout(pageLayout);
+
+            // Automatically save PDF to desktop with order ID
+            job.getJobSettings().setJobName("Order_" + orderId + ".pdf");
+
+            if (job.printPage(billPane)) {
+                job.endJob();
+                fullTotal=0;
+                txtName.clear();
+                txtAddress.clear();
+                new Alert(Alert.AlertType.INFORMATION, "Bill saved as PDF successfully!").show();
+            } else {
+                new Alert(Alert.AlertType.ERROR, "Failed to save PDF!").show();
+            }
+        }
+
+        tms.clear();
     }
 
     private void clearAllFields() {
         cmbCustomerIds.setValue(null);
-        txtName.clear();
-        txtAddress.clear();
         txtSalary.clear();
 
         txtDescription.clear();
@@ -261,11 +384,10 @@ public class PlaceOrderFormController {
         txtProductCode.clear();
         txtQty.clear();
 
-        fullTotal=0;
+
         lblTotal.setText("Total Cost : 0/=");
 
         txtProductCode.requestFocus();
-        tms.clear();
     }
 
     private void setUi(String location) throws IOException {
@@ -277,9 +399,5 @@ public class PlaceOrderFormController {
         );
     }
 
-    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
-        Alert alert = new Alert(AlertType, message, btnType);
-        alert.initOwner(context.getScene().getWindow());
-        alert.showAndWait();
-    }
+
 }

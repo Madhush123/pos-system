@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="context" prefHeight="501.0" prefWidth="996.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.devstack.pos.controller.StatisticsFormController">
+   <children>
+      <Button layoutX="28.0" layoutY="22.0" mnemonicParsing="false" onAction="#backToScreenOnAction" text="&lt;-- Back">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Label layoutX="112.0" layoutY="19.0" prefHeight="30.0" prefWidth="257.0" text="Statistics" textFill="#840909">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Button layoutX="850.0" layoutY="74.0" mnemonicParsing="false" onAction="#filterOnAction" prefHeight="30.0" prefWidth="117.0" style="-fx-background-color: #0652DD;" text="Filter" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Separator layoutX="28.0" layoutY="59.0" prefHeight="2.0" prefWidth="942.0" />
+      <DatePicker fx:id="dpFrom" layoutX="352.0" layoutY="74.0" prefHeight="30.0" prefWidth="210.0" />
+      <DatePicker fx:id="dpTo" layoutX="612.0" layoutY="74.0" prefHeight="30.0" prefWidth="210.0" />
+      <Label layoutX="577.0" layoutY="74.0" prefHeight="30.0" prefWidth="23.0" text="TO" textFill="#840909">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <AreaChart fx:id="chart" layoutX="26.0" layoutY="119.0" prefHeight="359.0" prefWidth="942.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </AreaChart>
+   </children>
+</AnchorPane>

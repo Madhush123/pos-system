@@ -1,9 +1,9 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.bo.BoFactory;
-import com.devstack.pos.bo.custom.UserBo;
+import com.devstack.pos.bo.BOFactory;
+import com.devstack.pos.bo.custom.UserBO;
 import com.devstack.pos.dto.response.ResponseUserDTO;
-import com.devstack.pos.util.BoType;
+import com.devstack.pos.util.BOType;
 import com.devstack.pos.util.SystemVariables;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -25,26 +25,44 @@ public class LoginFormController {
     public TextField txtEmail;
     public PasswordField txtPassword;
 
-    private UserBo userBo= BoFactory.getInstance().getBo(BoType.USER);
+    private UserBO userBo= BOFactory.getInstance().getBo(BOType.USER);
 
     public void backToScreenOnAction(ActionEvent actionEvent) throws IOException {
         setUi("MainForm");
     }
 
     public void loginOnAction(ActionEvent actionEvent) throws IOException {
+        String email = txtEmail.getText().trim();
+        String password = txtPassword.getText();
+
+        // --- Validation ---
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+
+        if (email.isEmpty() || password.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Email and Password are required!").show();
+            return;
+        }
+
+        if (!email.matches(emailRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid email format!").show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            new Alert(Alert.AlertType.WARNING, "Password must be at least 6 characters long!").show();
+            return;
+        }
         try{
-            ResponseUserDTO loginData = userBo.loginUser(
-                    txtEmail.getText().trim(), txtPassword.getText()
-            );
+            ResponseUserDTO loginData = userBo.loginUser(email, password);
             if(loginData.isStatus()){
-                showAlert(Alert.AlertType.INFORMATION,loginData.getMsg(),ButtonType.OK);
+                new Alert(Alert.AlertType.INFORMATION,loginData.getMsg(),ButtonType.OK).show();
                 SystemVariables.responseUserDTO=loginData;
                 setUi("DashboardForm");
             }else{
-                showAlert(Alert.AlertType.WARNING,loginData.getMsg(),ButtonType.OK);
+                new Alert(Alert.AlertType.WARNING,loginData.getMsg(),ButtonType.OK).show();
             }
         }catch (ClassNotFoundException | SQLException e){
-            showAlert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")",ButtonType.OK);
+            new Alert(Alert.AlertType.ERROR,"Error Occurred!...(" +e.getMessage()+")",ButtonType.OK).show();
             e.printStackTrace();
         }
     }
@@ -62,9 +80,4 @@ public class LoginFormController {
         );
     }
 
-    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
-        Alert alert = new Alert(AlertType, message, btnType);
-        alert.initOwner(context.getScene().getWindow());
-        alert.showAndWait();
-    }
 }

@@ -5,7 +5,6 @@ public class RequestProductDTO {
     private double unitPrice;
     private int qtyOnHand;
 
-
     public RequestProductDTO() {
     }
 

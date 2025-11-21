@@ -51,12 +51,12 @@
          <Cursor fx:constant="HAND" />
       </cursor>
    </AnchorPane>
-   <ImageView fitHeight="150.0" fitWidth="281.0" layoutX="317.0" layoutY="285.0" pickOnBounds="true">
+   <ImageView fitHeight="150.0" fitWidth="281.0" layoutX="317.0" layoutY="285.0" onMouseClicked="#openStatisticsFormOnAction" pickOnBounds="true">
       <image>
          <Image url="@images/dashboard/eac506a07e66f9d0c3992e3181386e44d92bf561.jpg" />
       </image>
    </ImageView>
-   <AnchorPane layoutX="317.0" layoutY="353.0" prefHeight="83.0" prefWidth="281.0" style="-fx-background-color: #130F40; -fx-opacity: 0.8;">
+   <AnchorPane layoutX="317.0" layoutY="353.0" onMouseClicked="#openStatisticsFormOnAction" prefHeight="83.0" prefWidth="281.0" style="-fx-background-color: #130F40; -fx-opacity: 0.8;">
       <children>
          <Label layoutX="105.0" layoutY="28.0" text="Statistics" textFill="WHITE">
             <font>
@@ -68,12 +68,12 @@
          <Cursor fx:constant="HAND" />
       </cursor>
    </AnchorPane>
-   <ImageView fitHeight="150.0" fitWidth="281.0" layoutX="615.0" layoutY="285.0" pickOnBounds="true">
+   <ImageView fitHeight="150.0" fitWidth="281.0" layoutX="615.0" layoutY="285.0" onMouseClicked="#openBackupFormOnAction" pickOnBounds="true">
       <image>
          <Image url="@images/dashboard/e8343a30eb040aae52a87f288b1220e776052831.jpg" />
       </image>
    </ImageView>
-   <AnchorPane layoutX="615.0" layoutY="353.0" prefHeight="83.0" prefWidth="281.0" style="-fx-background-color: #130F40; -fx-opacity: 0.8;">
+   <AnchorPane layoutX="615.0" layoutY="353.0" onMouseClicked="#openBackupFormOnAction" prefHeight="83.0" prefWidth="281.0" style="-fx-background-color: #130F40; -fx-opacity: 0.8;">
       <children>
          <Label layoutX="107.0" layoutY="28.0" text="Backups" textFill="WHITE">
             <font>
@@ -102,12 +102,12 @@
          <Cursor fx:constant="HAND" />
       </cursor>
    </AnchorPane>
-   <ImageView fitHeight="150.0" fitWidth="281.0" layoutX="21.0" layoutY="284.0" pickOnBounds="true">
+   <ImageView fitHeight="150.0" fitWidth="281.0" layoutX="21.0" layoutY="284.0" onMouseClicked="#openOrderHistoryFormOnAction" pickOnBounds="true">
       <image>
          <Image url="@images/dashboard/5bb89c98776aa1de28764bcc626d980a41e366df.jpg" />
       </image>
    </ImageView>
-   <AnchorPane layoutX="21.0" layoutY="352.0" prefHeight="83.0" prefWidth="281.0" style="-fx-background-color: #130F40; -fx-opacity: 0.8;">
+   <AnchorPane layoutX="21.0" layoutY="352.0" onMouseClicked="#openOrderHistoryFormOnAction" prefHeight="83.0" prefWidth="281.0" style="-fx-background-color: #130F40; -fx-opacity: 0.8;">
       <children>
          <Label layoutX="86.0" layoutY="28.0" text="Order History" textFill="WHITE">
             <font>

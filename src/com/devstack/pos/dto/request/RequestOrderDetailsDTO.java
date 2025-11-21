@@ -8,7 +8,7 @@ public class RequestOrderDetailsDTO {
     public RequestOrderDetailsDTO() {
     }
 
-    public RequestOrderDetailsDTO(String productId,double unitPrice, int qty) {
+    public RequestOrderDetailsDTO(String productId, double unitPrice, int qty) {
         this.productId = productId;
         this.unitPrice = unitPrice;
         this.qty = qty;

@@ -1,11 +1,11 @@
 package com.devstack.pos.controller;
 
-import com.devstack.pos.bo.BoFactory;
-import com.devstack.pos.bo.custom.ProductBo;
+import com.devstack.pos.bo.BOFactory;
+import com.devstack.pos.bo.custom.ProductBO;
 import com.devstack.pos.dto.request.RequestProductDTO;
 import com.devstack.pos.dto.response.ResponseProductDTO;
-import com.devstack.pos.util.BoType;
-import com.devstack.pos.view.tm.ProductTm;
+import com.devstack.pos.util.BOType;
+import com.devstack.pos.view.tm.ProductTM;
 import com.google.zxing.WriterException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,23 +28,23 @@ public class ProductFormController {
     public AnchorPane context;
     public TextField txtDescription;
     public TextField txtUnitPrice;
-    public TextField txtQtyOnHansd;
+    public TextField txtQtyOnHand;
     public Button btnSaveUpdate;
     public TextField txtSearch;
-    public TableView<ProductTm> tblProducts;
-    public TableColumn<ProductTm, Long> colId;
-    public TableColumn<ProductTm, String> colDescription;
-    public TableColumn<ProductTm, Double> colUnitPrice;
-    public TableColumn<ProductTm, Integer> colQTYOnHand;
-    public TableColumn<ProductTm, Button> colQRAvailability;
-    public TableColumn<ProductTm, ButtonBar> colTools;
+    public TableView<ProductTM> tblProducts;
+    public TableColumn<ProductTM, Long> colId;
+    public TableColumn<ProductTM, String> colDescription;
+    public TableColumn<ProductTM, Double> colUnitPrice;
+    public TableColumn<ProductTM, Integer> colQTYOnHand;
+    public TableColumn<ProductTM, Button> colQRAvailability;
+    public TableColumn<ProductTM, ButtonBar> colTools;
     public Label lblQty;
 
     private String selectedProductId=null;
     private byte[] qr=null;
     private String searchText="";
 
-    private final ProductBo productBo= BoFactory.getInstance().getBo(BoType.PRODUCT);
+    private final ProductBO productBo= BOFactory.getInstance().getBo(BOType.PRODUCT);
 
     public void initialize() {
         searchAll();
@@ -83,46 +83,75 @@ public class ProductFormController {
     }
 
     public void saveUpdateOnAction(ActionEvent actionEvent) {
+        String description = txtDescription.getText().trim();
+        String unitPriceText = txtUnitPrice.getText().trim();
+        String qtyText = txtQtyOnHand.getText().trim();
+
+        // Regex patterns
+        String priceRegex = "^[0-9]+(\\.[0-9]{1,2})?$"; // allows 123 or 123.45
+        String qtyRegex = "^[0-9]+$"; // only digits
+
+        // ---- Validation ----
+        if (description.isEmpty() || unitPriceText.isEmpty() || qtyText.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "All fields are required!").show();
+            return;
+        }
+
+        if (!unitPriceText.matches(priceRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Invalid unit price! Use a valid number (e.g., 12.50)").show();
+            return;
+        }
+
+        if (!qtyText.matches(qtyRegex)) {
+            new Alert(Alert.AlertType.WARNING, "Quantity must be a whole number!").show();
+            return;
+        }
+
+        double unitPrice = Double.parseDouble(unitPriceText);
+        int qty = Integer.parseInt(qtyText);
+
+        if (unitPrice <= 0) {
+            new Alert(Alert.AlertType.WARNING, "Unit price must be greater than 0!").show();
+            return;
+        }
+
+        if (qty < 0) {
+            new Alert(Alert.AlertType.WARNING, "Quantity cannot be negative!").show();
+            return;
+        }
         if(btnSaveUpdate.getText().equals("Save Product")) {
+
             //Sve Product
-            RequestProductDTO dto=new RequestProductDTO(
-                    txtDescription.getText().trim(),
-                    Double.parseDouble(txtUnitPrice.getText().trim()),
-                    Integer.parseInt(txtQtyOnHansd.getText().trim())
-            );
+            RequestProductDTO dto=new RequestProductDTO(description,unitPrice,qty);
             try{
                 boolean isSaved=productBo.createProduct(dto);
                 if(isSaved){
-                    showAlert(Alert.AlertType.INFORMATION, "Product Saved Successfully",ButtonType.OK);
+                    new Alert(Alert.AlertType.INFORMATION, "Product Saved Successfully",ButtonType.OK).show();
                     clear();
                     searchAll();
                 }else {
-                    showAlert(Alert.AlertType.ERROR,"Please try again",ButtonType.OK);
+                    new Alert(Alert.AlertType.ERROR,"Please try again",ButtonType.OK).show();
                 }
             } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
+                new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
                 e.printStackTrace();
             }
         }else{
             //Update Product
             if(selectedProductId==null){
-                showAlert(Alert.AlertType.WARNING, "Please select the customer", ButtonType.OK);
+                new Alert(Alert.AlertType.WARNING, "Please select the customer", ButtonType.OK).show();
                 return;
             }
             try{
                 productBo.updateProduct(
-                       new RequestProductDTO(
-                                txtDescription.getText().trim(),
-                                Double.parseDouble(txtUnitPrice.getText().trim()),
-                                Integer.parseInt(txtQtyOnHansd.getText().trim())
-                        ),selectedProductId,qr
+                       new RequestProductDTO(description,unitPrice,qty),selectedProductId,qr
                 );
-                showAlert(Alert.AlertType.INFORMATION, "Product Updated Successfully",ButtonType.OK);
+                new Alert(Alert.AlertType.INFORMATION, "Product Updated Successfully",ButtonType.OK).show();
                 searchAll();
                 clear();
 
             }catch (SQLException | ClassNotFoundException e){
-                showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
+                new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
             }
 
         }
@@ -131,7 +160,7 @@ public class ProductFormController {
     private void searchAll() {
         try {
             List<ResponseProductDTO> list=productBo.searchProducts(searchText);
-            ObservableList<ProductTm> items= FXCollections.observableArrayList();
+            ObservableList<ProductTM> items= FXCollections.observableArrayList();
             long id=1;
 
             for(ResponseProductDTO rc:list){
@@ -146,7 +175,7 @@ public class ProductFormController {
 
                 bar.getButtons().addAll(updateButton,deleteButton);
 
-                ProductTm item=new ProductTm(
+                ProductTM item=new ProductTM(
                         id++,
                         rc.getDescription(),
                         rc.getUnitPrice(),
@@ -159,20 +188,21 @@ public class ProductFormController {
                     btnSaveUpdate.setText("Update Customer");
                     txtDescription.setText(rc.getDescription());
                     txtUnitPrice.setText(String.valueOf(rc.getUnitPrice()));
-                    txtQtyOnHansd.setText(String.valueOf(rc.getQtyOnHand()));
+                    txtQtyOnHand.setText(String.valueOf(rc.getQtyOnHand()));
                     selectedProductId=rc.getProductId();
                     qr= rc.getQr();
                 });
 
                 deleteButton.setOnAction(actionEvent -> {
-                    Optional<ButtonType> buttonType= showAlert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.NO,ButtonType.YES);
+                    Alert alert=new Alert(Alert.AlertType.CONFIRMATION,"Are you sure?",ButtonType.NO,ButtonType.YES);
+                    Optional<ButtonType> buttonType=alert.showAndWait();
                     if(buttonType.get()==ButtonType.YES){
                         try {
                             productBo.deleteProduct(rc.getProductId());
-                            showAlert(Alert.AlertType.INFORMATION,"Product Deleted",ButtonType.OK);
+                            new Alert(Alert.AlertType.INFORMATION,"Product Deleted",ButtonType.OK).show();
                             searchAll();
                         }catch (SQLException|ClassNotFoundException e){
-                            showAlert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK);
+                            new Alert(Alert.AlertType.ERROR,"Error: "+e.getMessage(),ButtonType.OK).show();
                         }
                     }
                 });
@@ -209,7 +239,7 @@ public class ProductFormController {
     private void clear() {
         txtDescription.clear();
         txtUnitPrice.clear();
-        txtQtyOnHansd.clear();
+        txtQtyOnHand.clear();
         btnSaveUpdate.setText("Save Product");
     }
 
@@ -225,15 +255,5 @@ public class ProductFormController {
         );
     }
 
-    private void showAlert(Alert.AlertType AlertType, String message, ButtonType btnType) {
-        Alert alert = new Alert(AlertType, message, btnType);
-        alert.initOwner(context.getScene().getWindow());
-        alert.showAndWait();
-    }
 
-    private Optional<ButtonType> showAlert(Alert.AlertType AlertType, String message, ButtonType btnType1,ButtonType btnType2) {
-        Alert alert = new Alert(AlertType, message, btnType1,btnType2);
-        alert.initOwner(context.getScene().getWindow());
-        return alert.showAndWait();
-    }
 }

@@ -95,4 +95,17 @@ public class DashboardFormController {
     public void openPlaceOrderFormOnAction(MouseEvent mouseEvent) throws IOException {
         setUi("PlaceOrderForm");
     }
+
+    public void openOrderHistoryFormOnAction(MouseEvent mouseEvent) throws IOException {
+        setUi("OrderHistoryForm");
+    }
+
+    public void openStatisticsFormOnAction(MouseEvent mouseEvent) throws IOException {
+        setUi("StatisticsForm");
+    }
+
+    public void openBackupFormOnAction(MouseEvent mouseEvent) throws IOException {
+        setUi("BackupForm");
+
+    }
 }
