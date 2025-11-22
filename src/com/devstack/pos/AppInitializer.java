@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,5 +25,8 @@ public class AppInitializer extends Application {
         //primaryStage.setAlwaysOnTop(true);
         primaryStage.setTitle("POS SYSTEM");
         primaryStage.show();
+        primaryStage.getIcons().add(
+                new Image(getClass().getResourceAsStream("/com/devstack/pos/view/images/app-icon.png"))
+        );
     }
 }
